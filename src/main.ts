@@ -1,39 +1,56 @@
 // This is a simple Password Generator App that will generate random password
 
-// Range Slider Properties
-// Fill: The trailing color that you see when you drag the slider
-// background: Default Range Slider Background
-const sliderProps = {
-  fill: "#0B1EDF",
+type SlideProps = {
+  fill: string;
+  background: string;
+}
+
+type ContainerBound = {
+  left: number;
+  top: number;
+}
+
+interface RandomFunctionsMap {
+  [key: string]: () => any
+}
+
+// fill: the trailing color that you see when you drag the slider
+// background: default range slider background
+const sliderProps: SlideProps = {
+  fill: '#0B1EDF',
   background: 'rgba(255, 255, 255, .214)'
 }
 
 // Selecting the Range Slider container, which will affect the LENGTH property of the password
-const slider = document.querySelector('.range__slider')
+const slider = document.querySelector('.range__slider') as HTMLDivElement
 
 // Text which will show the value of the range slider
-const sliderValue = document.querySelector('.length__title')
+const sliderValue = document.querySelector('.length__title') as HTMLDivElement
+
+const input = slider.querySelector('input') as HTMLInputElement
 
 // Using Event Listener to apply the fill and also change the value of the text
-slider.querySelector('input').addEventListener('input', event => {
-  sliderValue.setAttribute('data-length', event.target.value)
-  applyFill(event.target)
+input.addEventListener('input', (e) => {
+  const target = e.target as HTMLInputElement
+
+  sliderValue.setAttribute('data-length', target.value)
+  applyFill(target)
 })
 
 // Selecting the range input and passing it in the applyFill func
-applyFill(slider.querySelector('input'))
+applyFill(input)
 
 // This function is responsible to create the trailing color and setting the fill
-function applyFill(slider)
+function applyFill(slider: HTMLInputElement)
 {
-  const percentage = (100 * (slider.value - slider.min)) / (slider.max - slider.min)
+  const percentage = (100 * (+slider.value - +slider.min)) / (+slider.max - +slider.min)
 
   slider.style.background = `linear-gradient(90deg, ${sliderProps.fill} ${percentage}%, ${sliderProps.background} ${percentage + .1}%)`
   sliderValue.setAttribute('data-length', slider.value)
 }
 
 // Object of all the function names that we will use to create random letters of password
-const randomFunc = {
+const randomFunc: RandomFunctionsMap = {
   lower: getRandomLower,
   upper: getRandomUpper,
   number: getRandomNumber,
@@ -41,69 +58,70 @@ const randomFunc = {
 }
 
 // Random more secure value
-function secureMathRandom()
+function secureMathRandom(): number
 {
   return window.crypto.getRandomValues(new Uint32Array(1))[0] / (Math.pow(2, 32) - 1)
 }
 
 // Generator Functions
 // All the functions that are responsible to return a random value taht we will use to create password.
-function getRandomLower()
+function getRandomLower(): string
 {
   return String.fromCharCode(Math.floor(Math.random() * 26) + 97)
 }
-function getRandomUpper()
+function getRandomUpper(): string
 {
   return String.fromCharCode(Math.floor(Math.random() * 26) + 65)
 }
-function getRandomNumber()
+function getRandomNumber(): string
 {
   return String.fromCharCode(Math.floor(secureMathRandom() * 10) + 48)
 }
-function getRandomSymbol()
+function getRandomSymbol(): string
 {
   const symbols = '~!@#$%^&*()_+{}":?><;.,'
+
   return symbols[Math.floor(Math.random() * symbols.length)]
 }
 
 // Selecting all the DOM Elements that are necessary
 
 // The Viewbox where the result will be shown
-const resultEl = document.getElementById('result')
+const resultEl = document.getElementById('result') as HTMLDivElement
 // The input slider, will use to change the length of the password
-const lengthEl = document.getElementById('slider')
+const lengthEl = document.getElementById('slider') as HTMLInputElement
 
 // Checkboxes representing the options that is responsible to create differnt type of password based on user
-const uppercaseEl = document.getElementById('uppercase')
-const lowercaseEl = document.getElementById('lowercase')
-const numberEl = document.getElementById('number')
-const symbolEl = document.getElementById('symbol')
+const uppercaseEl = document.getElementById('uppercase') as HTMLInputElement
+const lowercaseEl = document.getElementById('lowercase') as HTMLInputElement
+const numberEl = document.getElementById('number') as HTMLInputElement
+const symbolEl = document.getElementById('symbol') as HTMLInputElement
 
 // Button to generate the password
-const generateBtn = document.getElementById('generate')
+const generateBtn = document.getElementById('generate') as HTMLButtonElement
 // Button to copy the text
-const copyBtn = document.getElementById('copy-btn')
+const copyBtn = document.getElementById('copy-btn') as HTMLButtonElement
 // Result viewbox container
-const resultContainer = document.querySelector('.result')
+const resultContainer = document.querySelector('.result') as HTMLDivElement
 // Text info showed after generate button is clicked
-const copyInfo = document.querySelector('.result__info.right')
+const copyInfo = document.querySelector('.result__info.right') as HTMLDivElement
 // Text appear after copy button is clicked
-const copiedInfo = document.querySelector('.result__info.left')
+const copiedInfo = document.querySelector('.result__info.left') as HTMLDivElement
 
 // if this variable is trye only then the copyBtn will appear,
 // i.e. when the user first click generate the copyBth will interact
-let generatedPassword = false
+let generatedPassword: boolean = false
 
 // Update Css Props of the COPY button
 // Getting the bounds of the result viewbox container
-let rect = resultContainer.getBoundingClientRect()
-let resultContainerBound = {
+let rect: DOMRect = resultContainer.getBoundingClientRect()
+let resultContainerBound: ContainerBound = {
   left: rect.left,
   top: rect.top
 }
 
 // This will update the position of the copy button based on mouse Position
-resultContainer.addEventListener('mousemove', e => {
+resultContainer.addEventListener('mousemove', (e) => {
   rect = resultContainer.getBoundingClientRect()
 
   resultContainerBound = {
@@ -156,10 +174,10 @@ copyBtn.addEventListener('click', () => {
 // When Generate is clicked Password id generated
 generateBtn.addEventListener('click', () => {
   const length = +lengthEl.value
-  const hasLower = lowercaseEl.checked
-  const hasUpper = uppercaseEl.checked
-  const hasNumber = numberEl.checked
-  const hasSymbol = symbolEl.checked
+  const hasLower = +lowercaseEl.checked
+  const hasUpper = +uppercaseEl.checked
+  const hasNumber = +numberEl.checked
+  const hasSymbol = +symbolEl.checked
 
   generatedPassword = true
 
@@ -172,10 +190,10 @@ generateBtn.addEventListener('click', () => {
 })
 
 // Function responsible to generate password and then returning it
-function generatePassword(length, lower, upper, number, symbol)
+function generatePassword(length: number, lower: number, upper: number, numeral: number, symbol: number)
 {
-  const typesCount = lower + upper + number + symbol
-  const typesArr = [{ lower }, { upper }, { number }, { symbol }].filter(item => Object.values(item)[0])
+  const typesArr = [{ lower }, { upper }, { number: numeral }, { symbol }].filter(item => Object.values(item)[0])
+  const typesCount = lower + upper + numeral + symbol
   let generatedPassword = ''
 
   if (typesCount === 0) {
@@ -183,7 +201,7 @@ function generatePassword(length, lower, upper, number, symbol)
   }
 
   for (let i = 0; i < length; i++) {
-    typesArr.forEach(type => {
+    typesArr.forEach((type) => {
       const funcName = Object.keys(type)[0]
       generatedPassword += randomFunc[funcName]()
     })
@@ -202,12 +220,12 @@ function disableOnlyCheckbox()
 {
   const totalChecked = [uppercaseEl, lowercaseEl, numberEl, symbolEl].filter(el => el.checked)
 
-  totalChecked.forEach(el => {
+  totalChecked.forEach((el) => {
     el.disabled = totalChecked.length === 1
   })
 }
 
-[uppercaseEl, lowercaseEl, numberEl, symbolEl].forEach(el => {
+[uppercaseEl, lowercaseEl, numberEl, symbolEl].forEach((el) => {
   el.addEventListener('click', () => {
     disableOnlyCheckbox()
   })

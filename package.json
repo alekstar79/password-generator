@@ -1,0 +1,19 @@
+{
+  "name": "password-generator",
+  "version": "1.0.0",
+  "description": "Application for generating random passwords",
+  "main": "index.js",
+  "repository": "git@github.com:alekstar79/password-generator.git",
+  "author": "alekstar79 <alekstar79@yandex.ru>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "./node_modules/.bin/tsc",
+    "watch": "./node_modules/.bin/tsc -w"
+  },
+  "devDependencies": {
+    "tslint": "^6.1.3",
+    "tslint-config-airbnb": "^5.11.2",
+    "typescript": "^5.4.5"
+  }
+}
